@@ -1,3 +1,7 @@
+-- Delete Rows with vine is equal to nulls
+DELETE FROM vine_table
+where vine isnull;
+
 -- Total Votes count greater than or equal to zero 
 DROP TABLE IF EXISTS totalvotesgeq20_table;
 CREATE TABLE totalvotesgeq20_table AS
@@ -35,17 +39,19 @@ CREATE TABLE vine_n_table AS
 SELECT * FROM vine_n_table limit 20
 
 
-=====================================
+-- Total Reviews with helpful ration greater than or equal to 0.50 
+SELECT COUNT(review_id) AS Total_Reviews 
+FROM percent50ge_table;
 
+-- Total Five Star Reviews
+SELECT COUNT(review_id) AS Total_Five_star_reviews
+FROM percent50ge_table
+WHERE star_rating = '5';
 
+--- Ratio of paid and unpaid  five_star reviews vs total_reviews
+SELECT vine AS Vine, count(star_rating),  
+    (count(star_rating) :: FLOAT / (select count(review_id) from percent50ge_table)) AS Percentage 
+FROM percent50ge_table
+GROUP BY vine, star_rating
+HAVING star_rating = 5;
 
-create TABLE reviewsum as
-  SELECT vine, COUNT(DISTINCT review_id) as total_rating_5star
-	 from vine_table
-	 where star_rating = 5
-	 group by  vine; 
-
-select * from reviewsum;
-
-
- 
